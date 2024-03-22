@@ -2,8 +2,6 @@ package com.example.fujitsutrialtask;
 
 import jakarta.persistence.*;
 
-import java.sql.Timestamp;
-
 @Entity
 @Table(name = "weather_data")
 public class WeatherData {
@@ -28,7 +26,7 @@ public class WeatherData {
     private String weatherPhenomenon;
 
     @Column(name = "timestamp")
-    private Timestamp timestamp;
+    private Long timestamp;
 
     // Getters and setters
 
@@ -72,11 +70,11 @@ public class WeatherData {
         this.weatherPhenomenon = weatherPhenomenon;
     }
 
-    public Timestamp getTimestamp() {
+    public Long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Timestamp timestamp) {
+    public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
 }

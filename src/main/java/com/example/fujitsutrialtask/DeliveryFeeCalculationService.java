@@ -17,7 +17,13 @@ public class DeliveryFeeCalculationService {
     @Transactional(readOnly = true) // Ensure read-only transaction when fetching weather data
     public double calculateDeliveryFee(String city, String vehicleType) {
         // Fetch the latest weather data for the specified city
-        WeatherData latestWeatherData = weatherDataRepository.findLatestDataByCity(city);
+        String station = switch (city) {
+            case "Tallinn" -> "Tallinn-Harku";
+            case "Tartu" -> "Tartu-Tõravere";
+            case "Pärnu" -> "Pärnu";
+            default -> throw new RuntimeException("Invalid city name");
+        };
+        WeatherData latestWeatherData = weatherDataRepository.findFirstByStationNameOrderByTimestampDesc(station);
 
         // Apply business rules to calculate regional base fee (RBF)
         double baseFee = calculateRegionalBaseFee(city, vehicleType);

@@ -30,7 +30,7 @@ public class WeatherImportService {
      * Use restTemplate to make HTTP request to the weather portal
      * Save WeatherData entity to the database using WeatherDataRepository
      */
-    @Scheduled(cron = "0 15 * * * *") // Cron expression for running the task every hour, 15 minutes after full hour
+    @Scheduled(cron = "15 * * * * *") // Cron expression for running the task every hour, 15 minutes after full hour
     public void importWeatherData() {
         RestTemplate restTemplate = new RestTemplate();
         String url = "https://www.ilmateenistus.ee/ilma_andmed/xml/observations.php";
@@ -42,7 +42,7 @@ public class WeatherImportService {
                     weatherDataRepository.save(weatherData); // Save each WeatherData object to the database
                 }
             }
-            System.out.println("Weather data fetched successfully:\n" + response);
+            System.out.println("Weather data fetched successfully:\n");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -62,18 +62,18 @@ public class WeatherImportService {
             InputSource inputSource = new InputSource(new StringReader(xmlData));
             Document document = builder.parse(inputSource);
 
-            Timestamp timestamp = Timestamp.valueOf(document.getDocumentElement().getAttribute("timestamp"));
+            Long timestamp = Long.valueOf(document.getDocumentElement().getAttribute("timestamp"));
             NodeList stationNodes = document.getElementsByTagName("station");
             for (int i = 0; i < stationNodes.getLength(); i++) {
                 Element stationElement = (Element) stationNodes.item(i);
                 WeatherData weatherData = new WeatherData();
-                String name = stationElement.getAttribute("name");
+                String name = stationElement.getElementsByTagName("name").item(0).getTextContent();
                 if (containsElement(new String[]{"Tallinn-Harku", "Tartu-Tõravere", "Pärnu"}, name)) {
-                    weatherData.setStationName(stationElement.getAttribute("name"));
-                    weatherData.setWmoCode(stationElement.getAttribute("wmocode"));
-                    weatherData.setAirTemperature(Double.parseDouble(stationElement.getAttribute("airtemperature")));
-                    weatherData.setWindSpeed(Double.parseDouble(stationElement.getAttribute("windspeed")));
-                    weatherData.setWeatherPhenomenon(stationElement.getAttribute("phenomenon"));
+                    weatherData.setStationName(name);
+                    weatherData.setWmoCode(stationElement.getElementsByTagName("wmocode").item(0).getTextContent());
+                    weatherData.setAirTemperature(Double.parseDouble(stationElement.getElementsByTagName("airtemperature").item(0).getTextContent()));
+                    weatherData.setWindSpeed(Double.parseDouble(stationElement.getElementsByTagName("windspeed").item(0).getTextContent()));
+                    weatherData.setWeatherPhenomenon(stationElement.getElementsByTagName("phenomenon").item(0).getTextContent());
                     weatherData.setTimestamp(timestamp);
                     weatherDataList.add(weatherData);
                 }
@@ -81,6 +81,7 @@ public class WeatherImportService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.println(weatherDataList.size());
         return weatherDataList;
     }
 
