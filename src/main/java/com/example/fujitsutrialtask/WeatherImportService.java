@@ -30,7 +30,7 @@ public class WeatherImportService {
      * Use restTemplate to make HTTP request to the weather portal
      * Save WeatherData entity to the database using WeatherDataRepository
      */
-    @Scheduled(cron = "15 * * * * *") // Cron expression for running the task every hour, 15 minutes after full hour
+    @Scheduled(cron = "15 * * * * ") // Cron expression for running the task every hour, 15 minutes after full hour
     public void importWeatherData() {
         RestTemplate restTemplate = new RestTemplate();
         String url = "https://www.ilmateenistus.ee/ilma_andmed/xml/observations.php";
