@@ -36,6 +36,7 @@ public class DeliveryFeeCalculationService {
     }
 
     private double calculateRegionalBaseFee(String city, String vehicleType) {
+        // Following business rules for calculating regional base fee
         switch (city) {
             case "Tallinn" -> {
                 return switch (vehicleType) {
@@ -65,7 +66,7 @@ public class DeliveryFeeCalculationService {
         }
     }
 
-    private double calculateAdditionalFees(WeatherData weatherData, String vehicleType) {
+    private double calculateAdditionalFees(WeatherData weatherData, String vehicleType) { // Calculating ATEF, WSEF and WPEF together
         double fee = 0.0;
         if (vehicleType.equals("Scooter") || vehicleType.equals("Bike")){
             if (weatherData.getAirTemperature() < -10) fee += 1;

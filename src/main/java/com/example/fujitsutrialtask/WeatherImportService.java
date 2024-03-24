@@ -68,7 +68,7 @@ public class WeatherImportService {
                 Element stationElement = (Element) stationNodes.item(i);
                 WeatherData weatherData = new WeatherData();
                 String name = stationElement.getElementsByTagName("name").item(0).getTextContent();
-                if (containsElement(new String[]{"Tallinn-Harku", "Tartu-Tõravere", "Pärnu"}, name)) {
+                if (containsElement(new String[]{"Tallinn-Harku", "Tartu-Tõravere", "Pärnu"}, name)) { // These three are the only weather stations that we need data from, so only this data is saved to the database
                     weatherData.setStationName(name);
                     weatherData.setWmoCode(stationElement.getElementsByTagName("wmocode").item(0).getTextContent());
                     weatherData.setAirTemperature(Double.parseDouble(stationElement.getElementsByTagName("airtemperature").item(0).getTextContent()));
